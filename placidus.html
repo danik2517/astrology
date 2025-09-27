@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Астро анкета</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0a0e17;
+            color: #e0e0e0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        #starfield {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 90%;
+            background: rgba(18, 22, 40, 0.85);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(80, 102, 144, 0.3);
+            margin: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #ffffff;
+            font-size: 2.2rem;
+            text-shadow: 0 0 10px rgba(106, 17, 203, 0.5);
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 25%;
+            width: 50%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #6a11cb, #2575fc, transparent);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #b8c1ec;
+            font-size: 1rem;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(10, 14, 23, 0.7);
+            border: 1px solid #2d374d;
+            border-radius: 8px;
+            color: #e0e0e0;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #6a11cb;
+            box-shadow: 0 0 0 2px rgba(106, 17, 203, 0.3);
+        }
+
+        button {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            padding: 14px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            width: 100%;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(37, 117, 252, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .checkbox-group label {
+            font-weight: normal;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            padding: 8px 15px;
+            background: rgba(10, 14, 23, 0.5);
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .checkbox-group label:hover {
+            background: rgba(37, 117, 252, 0.2);
+        }
+
+        .checkbox-group input {
+            width: auto;
+            margin-right: 8px;
+        }
+
+        #message {
+            margin-top: 20px;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 600;
+            display: none;
+        }
+
+        .constellation {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            opacity: 0.1;
+            z-index: -1;
+        }
+
+        .constellation-1 {
+            top: 10%;
+            left: 5%;
+            background: radial-gradient(circle, #6a11cb 0%, transparent 70%);
+        }
+
+        .constellation-2 {
+            bottom: 15%;
+            right: 8%;
+            background: radial-gradient(circle, #2575fc 0%, transparent 70%);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .checkbox-group {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="starfield"></canvas>
+    <div class="constellation constellation-1"></div>
+    <div class="constellation constellation-2"></div>
+    
+    <div class="container">
+        <h1>Астро анкета</h1>
+        <form id="myForm">
+            <div class="form-group">
+                <label for="telegram">Ник в Телеграм*</label>
+                <input type="text" id="telegram" name="entry.233900024" required>
+            </div>
+
+            <div class="form-group">
+                <label for="birthdate">Дата рождения*</label>
+                <input type="date" id="birthdate" name="entry.1472184036" required>
+            </div>
+
+            <div class="form-group">
+                <label for="birthtime">Точное время рождения*</label>
+                <input type="time" id="birthtime" name="entry.312012386" required>
+            </div>
+
+            <div class="form-group">
+                <label for="country">Страна рождения*</label>
+                <input type="text" id="country" name="entry.505780592" required>
+            </div>
+
+            <div class="form-group">
+                <label for="region">Регион рождения</label>
+                <input type="text" id="region" name="entry.346302475" required>
+            </div>
+
+            <div class="form-group">
+                <label for="place">Точное место рождения*</label>
+                <input type="text" id="place" name="entry.1771916863" required>
+            </div>
+
+            <div class="form-group">
+                <label>Удобный формат получения информации*</label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" name="entry.123795652" value="PDF"> PDF</label>
+                    <label><input type="checkbox" name="entry.123795652" value="Голосовое сообщение"> Голосовое сообщение</label>
+                    <label><input type="checkbox" name="entry.123795652" value="Текстовое сообщение"> Текстовое сообщение</label>
+                </div>
+            </div>
+
+            <button type="submit">Отправить запрос в космос</button>
+        </form>
+
+        <div id="message"></div>
+    </div>
+
+    <script>
+        // Анимация звездного неба
+        const canvas = document.getElementById('starfield');
+        const ctx = canvas.getContext('2d');
+        let stars = [];
+        const starCount = 200;
+
+        // Установка размера canvas
+        function setCanvasSize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        // Создание звезд
+        function createStars() {
+            stars = [];
+            for (let i = 0; i < starCount; i++) {
+                stars.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    size: Math.random() * 2 + 0.5,
+                    speed: Math.random() * 0.5 + 0.1,
+                    brightness: Math.random() * 0.5 + 0.5
+                });
+            }
+        }
+
+        // Анимация звезд
+        function animateStars() {
+            ctx.fillStyle = 'rgba(10, 14, 23, 0.1)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            stars.forEach(star => {
+                star.x -= star.speed;
+                if (star.x < 0) {
+                    star.x = canvas.width;
+                    star.y = Math.random() * canvas.height;
+                }
+                
+                ctx.beginPath();
+                ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(255, 255, 255, ${star.brightness})`;
+                ctx.fill();
+            });
+            
+            requestAnimationFrame(animateStars);
+        }
+
+        // Инициализация звездного неба
+        setCanvasSize();
+        createStars();
+        animateStars();
+
+        // Обработка изменения размера окна
+        window.addEventListener('resize', () => {
+            setCanvasSize();
+            createStars();
+        });
+
+        // Замените YOUR_GOOGLE_FORM_ID на реальный ID вашей формы
+        const googleFormId = '1FAIpQLSfpa6g-174CPXUMrPTcYmfqFVtpFP9SAHG_06CtHsIO_8kNJw';
+        const formActionUrl = `https://docs.google.com/forms/d/e/${googleFormId}/formResponse`;
+
+        document.getElementById('myForm').addEventListener('submit', function(e) {
+            e.preventDefault(); // Останавливаем стандартную отправку формы
+
+            const formData = new FormData(this);
+            const urlParams = new URLSearchParams(formData).toString(); // Формируем данные для отправки
+
+            // Отправляем данные с помощью запроса fetch
+            fetch(formActionUrl, {
+                method: 'POST',
+                mode: 'no-cors', // Обходим ограничение CORS
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: urlParams
+            })
+            .then(() => {
+                // Сообщение об успехе, даже если ответ не получен из-за no-cors
+                showMessage('✅ Данные успешно отправлены в космос!', '#4CAF50');
+                document.getElementById('myForm').reset(); // Очищаем форму
+            })
+            .catch(error => {
+                // В случае ошибки
+                showMessage('❌ Произошла ошибка при отправке. Пожалуйста, попробуйте еще раз.', '#f44336');
+                console.error('Ошибка:', error);
+            });
+        });
+
+        function showMessage(text, color) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.style.color = color;
+            messageDiv.textContent = text;
+            messageDiv.style.display = 'block';
+            messageDiv.style.background = 'rgba(255, 255, 255, 0.1)';
+            setTimeout(() => { messageDiv.style.display = 'none'; }, 5000); // Скрыть сообщение через 5 секунд
+        }
+    </script>
+</body>
+</html>
